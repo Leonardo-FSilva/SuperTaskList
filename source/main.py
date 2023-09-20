@@ -1,5 +1,8 @@
 import PySimpleGUI as sg
-from front_end import main_screen
+from datetime import datetime
+
+from front_end import main_screen, popup_create_new_task
+import database_manager
 
 
 sg.theme('dark')
@@ -57,10 +60,22 @@ while True:
             window['-table_task_list-'].update(visible=True)
             window['-sub_title-'].update('Abaixo todas as tarefas')
             _visibility = 'Todos'
+    elif event == 'Add tarefa':
+        win_new_desk = sg.Window('Criar uma nova tarefa', popup_create_new_task())
+        while True:
+            events, values = win_new_desk.read()
+            print('\nevent: ', event, '\nvalue: ', values)
+            if event in (sg.WIN_CLOSED, 'Sair'):
+                break
+            elif event == 'Add tarefa':
+                _today_date = datetime.today()
+                print(_today_date)
+                # database_manager.input_data_base('leo_task_list', _today_date)
     elif '+CLICKED+' in event:
         if isinstance(event[2][0], int):
             if event[2][0] == -1:
                 ...  # cabeçalho
             elif event[2][0] >= 0:
-                ...  # linhas
+                ...
+
 window.close()

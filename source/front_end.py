@@ -1,11 +1,12 @@
 import PySimpleGUI as sg
 from back_end import update_report
+import database_manager as dm
 
 def main_screen():
     return [
-        [sg.Menu([['Arquivo',['Local do arquivo','Requisitos de sistema','Creditos']],
-                  ['Exibir',['Historico de concluidos','Log de erros']],
-                  ['Sistema',['Sair','Trocar usuario', 'Adicionar lembretes']]])],
+        [sg.Menu([['Arquivo',['Local do arquivo','Requisitos de sistema','Créditos']],
+                  ['Exibir',['Históricos de concluídos','Log de erros']],
+                  ['Sistema',['Sair','Trocar usuário', 'Adicionar lembretes']]])],
 
         [sg.Push(), sg.Text('\n-- SUPER TASK LIST --',font=('Roboto Condensed', 20, 'bold')), sg.Push()],
         [sg.Push(), sg.Text(key='-sub_title-',font=('Roboto Condensed', 12)), sg.Push()],
@@ -26,12 +27,20 @@ def right_block():
         [sg.Table(
             justification='left',
             key='-table_task_list-',
-            values=update_report(),
-            headings=('Data','Nome','Status','Prioridade','Tipo','Referencias'),
+            values=dm.read_data_base('leo_task_list'),
+            headings=('Índice','Data','Nome','Status','Prioridade','Referencias'),
             size=(50,20),
             enable_click_events=True,
             enable_events=True)
         ]
+    ]
+
+def popup_create_new_task():
+    return [
+        [sg.Text('None da tarefa:'), sg.Input(key='-newtaskname-',size=(30))],
+        [sg.Text('Prioridade:'), sg.Combo(['Alta','Média','Baixa'],readonly=True), sg.Text('Tipo:'), sg.Combo(['Manutenção','Compras','Projetos','Programação','Outros'],readonly=True)],
+        [sg.Text('Referencias ou observações:'),sg.Input(key='-newtaskreference-',size=(20))],
+        [sg.Button('Criar tarefa',key='-createtask-'),sg.Button('Sair')]
     ]
 
 
