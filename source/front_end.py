@@ -1,37 +1,58 @@
 import PySimpleGUI as sg
+from back_end import update_report
 
+def main_screen():
+    return [
+        [sg.Menu([['Arquivo',['Local do arquivo','Requisitos de sistema','Creditos']],
+                  ['Exibir',['Historico de concluidos','Log de erros']],
+                  ['Sistema',['Sair','Trocar usuario', 'Adicionar lembretes']]])],
 
-layout_main_screen = [  [sg.Text('My Window')],
-            [sg.Col([[sg.T('Tarefas'), sg.Push()]], scrollable=True, key='-COL-', s=(500,250))],
-            [sg.Text('Click to add a row inside the Column'), sg.B('+', key='-ADD COL-')]]
+        [sg.Push(), sg.Text('\n-- SUPER TASK LIST --',font=('Roboto Condensed', 20, 'bold')), sg.Push()],
+        [sg.Push(), sg.Text(key='-sub_title-',font=('Roboto Condensed', 12)), sg.Push()],
+        [sg.Col(left_block()),sg.Col(right_block())],
+        [sg.Push(),sg.Button('Add tarefa'),sg.Button('Sair')]]
 
-def layout_create_new_task():
-    new_task_layout =   [[sg.T('Nome da tarefa:'), sg.I(size=(25), key='-NOMETAREFA-')],
-                        [sg.Push(), sg.T('Referencias:'), sg.I(size=(25), key='-REFERENCIA-')],
-                        [sg.Combo([['Baixa'], ['Media'], ['Alta']], size=(8), key='PRIORIDADE'),
-                        sg.Combo([['Projetos'], ['Compras'], ['Manutenção'], ['Outros']], size=(10), key='TIPOTAREFA')],
-                        [sg.B('Criar tarefa'), sg.B('Cancelar')]]
-    return new_task_layout
+def left_block():
+    return [
+        [sg.Button('Manutenção', button_color=('black', 'red'),size=(10,3))],
+        [sg.Button('Compras', button_color=('black', 'green'),size=(10,3))],
+        [sg.Button('Projetos', button_color=('white', 'blue'),size=(10,3))],
+        [sg.Button('Programação', button_color=('black', 'orange'),size=(10,3))],
+        [sg.Button('Outros', button_color=('black', 'yellow'),size=(10,3))],
+    ]
 
-def open_task_description():
-    layout  =  [[sg.T('descição da tarefa:')],
-                [sg.T('Sem Descrição...', size=(65,15), key='open_descr_tarefa')],
-                [sg.B('Criar descrição'), sg.B('Voltar')]]
-    return layout
+def right_block():
+    return [
+        [sg.Table(
+            justification='left',
+            key='-table_task_list-',
+            values=update_report(),
+            headings=('Data','Nome','Status','Prioridade','Tipo','Referencias'),
+            size=(50,20),
+            enable_click_events=True,
+            enable_events=True)
+        ]
+    ]
 
-def create_task_description():
-    layout =   [[sg.T('descição da tarefa:')],
-                [sg.I(size=(50,25), key='descr_tarefa')],
-                [sg.B('Salvar'), sg.B('Voltar')]]
-    return layout
 
 if __name__ == '__main__':
-    layout = open_task_description()
+    sg.theme('dark')
+    window = sg.Window('Window Title', main_screen())
 
-    window = sg.Window('Window Title', layout)
+    _visibility=False
+
     while True:
         event, values = window.read()
         print('\nevent: ', event, '\nvalue: ', values)
-        if event in (sg.WIN_CLOSED, 'Exit'):
+        if event in (sg.WIN_CLOSED, 'Sair'):
             break
+        elif event == 'Todos':
+            if _visibility:
+                window['-table_task_list-'].update(visible=False)
+                window['-sub_title-'].update('')
+                _visibility = False
+            else:
+                window['-table_task_list-'].update(visible=True)
+                window['-sub_title-'].update('Abaixo todas as tarefas')
+                _visibility = True
     window.close()
