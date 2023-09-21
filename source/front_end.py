@@ -15,10 +15,15 @@ def main_screen():
 
 def left_block():
     return [
-        [sg.Button('Próximos', button_color=('black', 'lightgray'),size=(10,3))],
-        [sg.Button('Fazendo', button_color=('black', 'yellow'),size=(10,3))],
-        [sg.Button('Concluídos', button_color=('black', 'green'),size=(10,3))],
-    ]
+        [sg.Button('Próximos', button_color=('black', 'lightgray'),size=(10,2))],
+        [sg.Button('Fazendo', button_color=('black', 'yellow'),size=(10,2))],
+        [sg.Button('Concluídos', button_color=('black', 'green'),size=(10,2))],
+        [sg.Text()],
+        [sg.Button('Outros', button_color=('black', '#FFA500'),size=(10,1))],
+        [sg.Button('Compras', button_color=('white', '#0000FF'),size=(10,1))],
+        [sg.Button('Projetos', button_color=('black', '#FFFF00'),size=(10,1))],
+        [sg.Button('Manutenção', button_color=('black', '#FF0000'),size=(10,1))],
+        [sg.Button('Programação', button_color=('black', '#00FF00'),size=(10,1))]]
 
 def right_block():
     return [
@@ -26,7 +31,7 @@ def right_block():
             justification='left',
             key='table_task_list',
             values=dm.read_data_base('leo_task_list'),
-            headings=('Índice','Data','Nome','Status','Prioridade','Referencias'),
+            headings=('Id','Data','Nome','Status','Prioridade','Referencias'),
             size=(60,20),
             enable_click_events=True,
             enable_events=True,
@@ -34,17 +39,19 @@ def right_block():
         ]
     ]
 
-def popup_task():
-
+def popup_task(nome, status, prioridade, referencia, tipo, conteudo, foto=''):
     return [
-        [sg.Text('None da tarefa:'), sg.Input(key='-newtaskname-',size=(31)), sg.Push(), sg.Text('Prioridade:'), sg.Combo(['Alta','Média','Baixa'],readonly=True,key='-newtaskprioridade-')],
-        [sg.Text('Referencias ou observações:'),sg.Input(key='-newtaskreference-',size=(20)), sg.Push(), sg.Text('Tipo:'), sg.Combo(['Manutenção','Compras','Projetos','Programação','Outros'],readonly=True,key='-newtasktipo-')],
+        [sg.Text('None da tarefa:'), sg.Input(key='-newtaskname-',size=(31), default_text=nome), sg.Push(), sg.Text('Prioridade:'), sg.Combo(['Alta','Media','Baixa'],readonly=True,key='-newtaskprioridade-', default_value=prioridade)],
+        [sg.Text('Referencias:'),sg.Input(key='-newtaskreference-',size=(20), default_text=referencia), sg.Push(),sg.Text('Status:'),sg.Combo(['Proximo','Fazendo','Concluído'],default_value=status,readonly=True,key='-newtaskstatus-'), sg.Text('Tipo:'), sg.Combo(['Manutenção','Compras','Projetos','Programação','Outros'],default_value=tipo,readonly=True,key='-newtasktipo-')],
         # [ sg.Push(),sg.Text('Leonardo Felipe da Silva'), sg.Push()],
         [sg.Multiline(size=(75,20),
                 	expand_y=True,
-                    expand_x=True)],
+                    expand_x=True,
+                    default_text=conteudo,
+                    key='-newtaskconteudo-')],
         [sg.Button("Anexar Imagem"), sg.Push(),sg.Button("Apagar tarefa"),sg.Button('Salvar',key='-savetask-'),sg.Button('Sair')]        
     ]
+
 def popup_create_new_task():
     return [
         [sg.Text('None da tarefa:'), sg.Input(key='-newtaskname-',size=(30))],
@@ -53,10 +60,9 @@ def popup_create_new_task():
         [sg.Button('Criar tarefa',key='-createtask-'),sg.Button('Sair')]
     ]
 
-
 if __name__ == '__main__':
     sg.theme('dark')
-    window = sg.Window('Window Title', popup_task())
+    window = sg.Window('Window Title', popup_task('gg','gg','f','d','s','d\nkhu','w'))
 
     _visibility=False
 
