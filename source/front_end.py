@@ -15,30 +15,40 @@ def main_screen():
 
 def left_block():
     return [
-        [sg.Button('Manutenção', button_color=('black', 'red'),size=(10,3))],
-        [sg.Button('Compras', button_color=('black', 'green'),size=(10,3))],
-        [sg.Button('Projetos', button_color=('white', 'blue'),size=(10,3))],
-        [sg.Button('Programação', button_color=('black', 'orange'),size=(10,3))],
-        [sg.Button('Outros', button_color=('black', 'yellow'),size=(10,3))],
+        [sg.Button('Próximos', button_color=('black', 'lightgray'),size=(10,3))],
+        [sg.Button('Fazendo', button_color=('black', 'yellow'),size=(10,3))],
+        [sg.Button('Concluídos', button_color=('black', 'green'),size=(10,3))],
     ]
 
 def right_block():
     return [
         [sg.Table(
             justification='left',
-            key='-table_task_list-',
+            key='table_task_list',
             values=dm.read_data_base('leo_task_list'),
             headings=('Índice','Data','Nome','Status','Prioridade','Referencias'),
-            size=(50,20),
+            size=(60,20),
             enable_click_events=True,
-            enable_events=True)
+            enable_events=True,
+            expand_x=True)
         ]
     ]
 
+def popup_task():
+
+    return [
+        [sg.Text('None da tarefa:'), sg.Input(key='-newtaskname-',size=(31)), sg.Push(), sg.Text('Prioridade:'), sg.Combo(['Alta','Média','Baixa'],readonly=True,key='-newtaskprioridade-')],
+        [sg.Text('Referencias ou observações:'),sg.Input(key='-newtaskreference-',size=(20)), sg.Push(), sg.Text('Tipo:'), sg.Combo(['Manutenção','Compras','Projetos','Programação','Outros'],readonly=True,key='-newtasktipo-')],
+        # [ sg.Push(),sg.Text('Leonardo Felipe da Silva'), sg.Push()],
+        [sg.Multiline(size=(75,20),
+                	expand_y=True,
+                    expand_x=True)],
+        [sg.Button("Anexar Imagem"), sg.Push(),sg.Button("Apagar tarefa"),sg.Button('Salvar',key='-savetask-'),sg.Button('Sair')]        
+    ]
 def popup_create_new_task():
     return [
         [sg.Text('None da tarefa:'), sg.Input(key='-newtaskname-',size=(30))],
-        [sg.Text('Prioridade:'), sg.Combo(['Alta','Média','Baixa'],readonly=True), sg.Text('Tipo:'), sg.Combo(['Manutenção','Compras','Projetos','Programação','Outros'],readonly=True)],
+        [sg.Text('Prioridade:'), sg.Combo(['Alta','Média','Baixa'],readonly=True,key='-newtaskprioridade-'), sg.Text('Tipo:'), sg.Combo(['Manutenção','Compras','Projetos','Programação','Outros'],readonly=True,key='-newtasktipo-')],
         [sg.Text('Referencias ou observações:'),sg.Input(key='-newtaskreference-',size=(20))],
         [sg.Button('Criar tarefa',key='-createtask-'),sg.Button('Sair')]
     ]
@@ -46,7 +56,7 @@ def popup_create_new_task():
 
 if __name__ == '__main__':
     sg.theme('dark')
-    window = sg.Window('Window Title', main_screen())
+    window = sg.Window('Window Title', popup_task())
 
     _visibility=False
 
